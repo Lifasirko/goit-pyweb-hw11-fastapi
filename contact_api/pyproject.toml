@@ -7,10 +7,14 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = "^0.111.0"
+fastapi = {extras = ["all"], version = "^0.111.0"}
 sqlalchemy = "^2.0.30"
 psycopg2 = "^2.9.9"
 pydantic = "^2.7.1"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+python-multipart = "^0.0.9"
+alembic = "^1.13.1"
 
 
 [tool.poetry.group.dev.dependencies]
