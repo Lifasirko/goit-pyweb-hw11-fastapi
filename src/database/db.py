@@ -13,23 +13,14 @@ PGHOST = config.get('DB', 'HOST')
 PGPORT = config.get('DB', 'PORT')
 PGNAME = config.get('DB', 'DB_NAME')
 
-DATABASE_URL = f"postgresql://{PGUSER}:{PGPASS}@{PGHOST}:{PGPORT}/{PGNAME}"
+DATABASE_URL = f"postgresql+asyncpg://{PGUSER}:{PGPASS}@{PGHOST}:{PGPORT}/{PGNAME}"
+# DATABASE_URL = f"postgresql+asyncpg://{PGUSER}:{PGPASS}@{PGHOST}:{PGPORT}/{PGNAME}"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
-
-
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True)
-    email = Column(String(150), nullable=False, unique=True)
-    password = Column(String(255), nullable=False)
-    refresh_token = Column(String(255), nullable=True)
-
-
-Base.metadata.create_all(bind=engine)
+# Base = declarative_base()
+# Base.metadata.create_all(bind=engine)
 
 
 # Dependency

@@ -27,6 +27,14 @@ class Contact(ContactBase):
         orm_mode = True
 
 
+class ContactResponse(ContactBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
 class UserModel(BaseModel):
     username: str = Field(min_length=5, max_length=16)
     email: str
