@@ -8,8 +8,10 @@ class ContactBase(BaseModel):
     last_name: str
     email: EmailStr
     phone_number: str
-    birthday: date
+    birthday: Optional[date] = None
     additional_info: Optional[str] = None
+    id: Optional[str] = None
+    created_at: Optional[str] = None
 
 
 class ContactCreate(ContactBase):
@@ -24,7 +26,7 @@ class Contact(ContactBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ContactResponse(ContactBase):
@@ -32,24 +34,24 @@ class ContactResponse(ContactBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserModel(BaseModel):
     username: str = Field(min_length=5, max_length=16)
-    email: str
+    email: EmailStr
     password: str = Field(min_length=6, max_length=10)
 
 
 class UserDb(BaseModel):
     id: int
     username: str
-    email: str
+    email: EmailStr
     created_at: datetime
-    avatar: str
+    avatar: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserResponse(BaseModel):

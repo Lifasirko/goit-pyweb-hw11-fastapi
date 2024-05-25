@@ -1,15 +1,17 @@
 from libgravatar import Gravatar
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
 from src.database.models import User
 from src.schemas import UserModel
 
 
-async def get_user_by_email(email: str, db: Session) -> User:
-    return db.query(User).filter(User.email == email).first()
+async def get_user_by_email(email: str, db: AsyncSession) -> User:
+    result = await db.execute(select(User).filter(User.email == email))
+    return result.scalars().first()
 
 
-async def create_user(body: UserModel, db: Session) -> User:
+async def create_user(body: UserModel, db: AsyncSession) -> User:
     avatar = None
     try:
         g = Gravatar(body.email)
@@ -18,17 +20,25 @@ async def create_user(body: UserModel, db: Session) -> User:
         print(e)
     new_user = User(**body.dict(), avatar=avatar)
     db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+    await db.commit()
+    await db.refresh(new_user)
     return new_user
 
 
-async def update_token(user: User, token: str | None, db: Session) -> None:
+async def update_token(user: User, token: str | None, db: AsyncSession) -> None:
     user.refresh_token = token
-    db.commit()
+    await db.commit()
 
 
-async def confirmed_email(email: str, db: Session) -> None:
+async def confirmed_email(email: str, db: AsyncSession) -> None:
     user = await get_user_by_email(email, db)
     user.confirmed = True
-    db.commit()
+    await db.commit()
+
+
+async def update_avatar(email: str, url: str, db: AsyncSession) -> User:
+    user = await get_user_by_email(email, db)
+    user.avatar = url
+    await db.commit()
+    await db.refresh(user)
+    return user
