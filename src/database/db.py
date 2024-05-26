@@ -21,9 +21,13 @@ engine = create_async_engine(DATABASE_URL, echo=True)
 # engine = create_engine(DATABASE_URL)
 async_session = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession)
 
+
 # Base = declarative_base()
 # Base.metadata.create_all(bind=engine)
 
+async def get_db() -> AsyncSession:
+    async with async_session() as session:
+        yield session
 
 # Dependency
 # async def get_db():
@@ -32,7 +36,3 @@ async_session = sessionmaker(autocommit=False, autoflush=False, bind=engine, cla
 #         yield db
 #     finally:
 #         await db.close()
-
-async def get_db() -> AsyncSession:
-    async with async_session() as session:
-        yield session

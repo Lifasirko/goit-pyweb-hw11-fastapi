@@ -5,9 +5,9 @@ from sqlalchemy.orm import Session
 
 from src.database.db import get_db
 from src.repository import users as repository_users
-from src.schemas import UserResponse, UserModel, TokenModel, RequestEmail
+from src.schemas import UserResponse, UserModel, TokenModel, RequestEmail, ResetPassword
 from src.services.auth import auth_service
-from src.services.email import send_email
+from src.services.email import send_email, send_reset_password_email
 
 router = APIRouter(prefix='/auth', tags=["auth"])
 security = HTTPBearer()
@@ -77,3 +77,28 @@ async def request_email(body: RequestEmail, background_tasks: BackgroundTasks, r
     if user:
         background_tasks.add_task(send_email, user.email, user.username, str(request.base_url))
     return {"message": "Check your email for confirmation."}
+
+
+@router.post("/request-reset-password")
+async def request_reset_password(body: RequestEmail, background_tasks: BackgroundTasks, request: Request,
+                                 db: Session = Depends(get_db)):
+    user = await repository_users.get_user_by_email(body.email, db)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    reset_token = auth_service.create_reset_password_token(data={"sub": user.email})
+    reset_url = f"{request.base_url}api/auth/reset-password?token={reset_token}"
+    background_tasks.add_task(send_reset_password_email, user.email, reset_url)
+    return {"message": "Password reset email has been sent."}
+
+
+@router.post("/reset-password")
+async def reset_password(body: ResetPassword, db: Session = Depends(get_db)):
+    email = await auth_service.verify_reset_password_token(body.token)
+    user = await repository_users.get_user_by_email(email, db)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    user.password = auth_service.get_password_hash(body.password)
+    db.commit()
+    return {"message": "Password has been reset successfully."}

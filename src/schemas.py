@@ -67,3 +67,8 @@ class TokenModel(BaseModel):
 
 class RequestEmail(BaseModel):
     email: EmailStr
+
+
+class ResetPassword(BaseModel):
+    token: str
+    password: str
