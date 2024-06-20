@@ -1,4 +1,8 @@
 docker run --name fastapi -p 5432:5432 -e POSTGRES_USER=amol -e POSTGRES_PASSWORD=1111 -d postgres
 
+
+docker run --name redis -p 6379:6379 -d redis
+
+
 poetry run uvicorn main:app --reload
 

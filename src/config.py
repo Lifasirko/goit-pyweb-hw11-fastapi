@@ -2,6 +2,9 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
+    """
+     Налаштування для додатку, зчитувані з файлу оточення.
+     """
     sqlalchemy_database_url: str
 
     mail_username: str

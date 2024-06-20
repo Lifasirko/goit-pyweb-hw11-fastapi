@@ -7,6 +7,21 @@ Base = declarative_base()
 
 
 class Contact(Base):
+    """
+    Модель для зберігання контактів.
+
+    Attributes:
+        id (int): Унікальний ідентифікатор контакту.
+        first_name (str): Ім'я контакту.
+        last_name (str): Прізвище контакту.
+        email (str): Електронна пошта контакту.
+        phone_number (str): Номер телефону контакту.
+        birthday (date): Дата народження контакту.
+        additional_info (str): Додаткова інформація про контакт.
+        user_id (int): Ідентифікатор користувача, до якого належить контакт.
+        user (User): Відношення до користувача.
+        created_at (datetime): Дата та час створення контакту.
+    """
     __tablename__ = 'contacts'
 
     id = Column(Integer, autoincrement=True, primary_key=True, index=True)
@@ -22,6 +37,19 @@ class Contact(Base):
 
 
 class User(Base):
+    """
+    Модель для зберігання користувачів.
+
+    Attributes:
+        id (int): Унікальний ідентифікатор користувача.
+        username (str): Ім'я користувача.
+        email (str): Електронна пошта користувача.
+        password (str): Пароль користувача.
+        created_at (datetime): Дата та час створення користувача.
+        avatar (str): URL до аватара користувача.
+        refresh_token (str): Токен оновлення для користувача.
+        confirmed (bool): Стан підтвердження облікового запису.
+    """
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     username = Column(String(50))

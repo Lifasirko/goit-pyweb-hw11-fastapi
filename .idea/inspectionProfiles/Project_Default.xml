@@ -53,6 +53,7 @@
       <option name="ignoredNames">
         <list>
           <option value="id" />
+          <option value="property" />
         </list>
       </option>
     </inspection_tool>

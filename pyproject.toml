@@ -25,6 +25,7 @@ python-dotenv = "^1.0.1"
 cloudinary = "^1.40.0"
 pydantic-settings = "^2.2.1"
 environs = "^11.0.0"
+sphinx = "^7.3.7"
 
 
 [tool.poetry.group.dev.dependencies]

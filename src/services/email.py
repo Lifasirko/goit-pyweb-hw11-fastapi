@@ -12,7 +12,6 @@ from environs import Env
 env = Env()
 env.read_env()
 
-
 conf = ConnectionConfig(
     MAIL_USERNAME=env.str('MAIL_USERNAME'),
     MAIL_PASSWORD=env.str('MAIL_PASSWORD'),
@@ -29,6 +28,17 @@ conf = ConnectionConfig(
 
 
 async def send_email(email: EmailStr, username: str, host: str):
+    """
+    Відправляє електронний лист для підтвердження електронної пошти.
+
+    Args:
+        email (EmailStr): Електронна пошта отримувача.
+        username (str): Ім'я користувача.
+        host (str): Хост для підтвердження.
+
+    Raises:
+        ConnectionErrors: Помилки підключення до сервера відправлення пошти.
+    """
     try:
         token_verification = auth_service.create_email_token({"sub": email})
         message = MessageSchema(
@@ -45,6 +55,13 @@ async def send_email(email: EmailStr, username: str, host: str):
 
 
 async def send_reset_password_email(email: str, reset_url: str):
+    """
+    Відправляє електронний лист для скидання пароля.
+
+    Args:
+        email (str): Електронна пошта отримувача.
+        reset_url (str): URL для скидання пароля.
+    """
     message = MessageSchema(
         subject="Password Reset Request",
         recipients=[email],

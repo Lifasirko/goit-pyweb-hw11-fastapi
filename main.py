@@ -33,6 +33,9 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
+    """
+    Ініціалізація підключення до Redis при запуску програми.
+    """
     r = await redis.Redis(
         host=settings.redis_host,
         port=settings.redis_port,
@@ -41,7 +44,6 @@ async def startup():
         decode_responses=True
     )
     await FastAPILimiter.init(r)
-
 
 # @app.on_event("shutdown")
 # async def shutdown_event():
@@ -55,12 +57,28 @@ app.include_router(users.router, prefix='/api')
 
 @app.get("/", dependencies=[Depends(RateLimiter(times=2, seconds=5))])
 async def read_root():
+    """
+    Маршрут для отримання кореневої сторінки.
+
+    Returns:
+        dict: Коренева сторінка.
+    """
     return {"message": "Welcome to the Contact API!!!"}
 
 
 @app.get("/secret")
 async def read_item(current_user: User = Depends(auth_service.get_current_user)):
+    """
+    Маршрут для отримання секретного повідомлення.
+
+    Args:
+        current_user (User): Поточний авторизований користувач.
+
+    Returns:
+        dict: Секретне повідомлення та електронна пошта власника.
+    """
     return {"message": 'secret router', "owner": current_user.email}
+
 
 
 if __name__ == "__main__":

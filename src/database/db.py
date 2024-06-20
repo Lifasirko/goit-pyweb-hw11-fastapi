@@ -26,6 +26,12 @@ async_session = sessionmaker(autocommit=False, autoflush=False, bind=engine, cla
 # Base.metadata.create_all(bind=engine)
 
 async def get_db() -> AsyncSession:
+    """
+    Створює та надає асинхронний сеанс бази даних.
+
+    Yields:
+        AsyncSession: Асинхронний сеанс бази даних.
+    """
     async with async_session() as session:
         yield session
 
